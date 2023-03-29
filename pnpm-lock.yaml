@@ -1,5 +1,16 @@
 lockfileVersion: '6.0'
 
+dependencies:
+  jotai:
+    specifier: ^2.0.3
+    version: 2.0.3
+  jotai-xstate:
+    specifier: ^0.3.0
+    version: 0.3.0(jotai@2.0.3)(xstate@4.37.1)
+  xstate:
+    specifier: ^4.37.1
+    version: 4.37.1
+
 devDependencies:
   '@size-limit/preset-small-lib':
     specifier: ^8.2.4
@@ -4963,6 +4974,26 @@ packages:
       - utf-8-validate
     dev: true
 
+  /jotai-xstate@0.3.0(jotai@2.0.3)(xstate@4.37.1):
+    resolution: {integrity: sha512-ImMTwkT8e2Ld3KBUtisjtzTgtg4jgeAoFzwVZgDCoDkYsYgmE8NatEwBoz63BTmpg+EKOYkDxd6QmrAT9a2TBw==}
+    peerDependencies:
+      jotai: '>=1.11.0'
+      xstate: '*'
+    dependencies:
+      jotai: 2.0.3
+      xstate: 4.37.1
+    dev: false
+
+  /jotai@2.0.3:
+    resolution: {integrity: sha512-MMjhSPAL3RoeZD9WbObufRT2quThEAEknHHridf2ma8Ml7ZVQmUiHk0ssdbR3F0h3kcwhYqSGJ59OjhPge7RRg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dev: false
+
   /jpjs@1.2.1:
     resolution: {integrity: sha512-GxJWybWU4NV0RNKi6EIqk6IRPOTqd/h+U7sbtyuD7yUISUzV78LdHnq2xkevJsTlz/EImux4sWj+wfMiwKLkiw==}
     dev: true
@@ -7287,6 +7318,10 @@ packages:
   /xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: true
+
+  /xstate@4.37.1:
+    resolution: {integrity: sha512-MuB7s01nV5vG2CzaBg2msXLGz7JuS+x/NBkQuZAwgEYCnWA8iQMiRz2VGxD3pcFjZAOih3fOgDD3kDaFInEx+g==}
+    dev: false
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
