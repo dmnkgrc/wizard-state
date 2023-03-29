@@ -1,5 +1,7 @@
-import { Steps } from "./types";
+import { Steps } from './types';
 
-export const createWizard = <TStepName extends string>(steps: Steps<TStepName>) => {
-  return steps 
-}
+export const createWizard = <TStepName extends string>(
+  steps: Steps<TStepName>
+) => {
+  return steps;
+};

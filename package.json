@@ -11,28 +11,20 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "build": "bunchee ./src/index.ts",
+    "watch": "bunchee ./src/index.ts -w",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+  "exports": {
+    "require": "dist/index.cjs",
+    "import": "dist/index.mjs",
+    "module": "dist/index.esm.js"
   },
   "name": "wizard-state",
   "author": "Dominik Garcia Bertapelle",
-  "module": "dist/wizard-state.esm.js",
   "size-limit": [
     {
       "path": "dist/wizard-state.cjs.production.min.js",
@@ -45,11 +37,14 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^8.2.4",
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "bunchee": "^2.2.1",
     "husky": "^8.0.3",
+    "prettier": "^2.8.7",
     "size-limit": "^8.2.4",
-    "tsdx": "^0.14.1",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.2"
+    "typescript": "5.0.2",
+    "vitest": "^0.29.8"
   },
   "dependencies": {
     "jotai": "^2.0.3",
