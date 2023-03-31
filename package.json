@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
+    "lint": "prettier --check 'src/**/*.ts'",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

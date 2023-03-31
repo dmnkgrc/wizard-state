@@ -1,2 +1,2 @@
-export * from './createWizard';
+export * from './generateMachine';
 export * from './types';
