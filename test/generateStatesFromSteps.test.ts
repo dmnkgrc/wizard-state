@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { generateStatesFromSteps } from '../src/generateStatesFromSteps';
 
 describe('generateStatesFromSteps', () => {
-  test('contains the expected states', () => {
+  it('contains the expected states', () => {
     // @ts-expect-error not allowed
     expect(generateStatesFromSteps([])).toEqual({});
 
@@ -36,7 +36,7 @@ describe('generateStatesFromSteps', () => {
       },
       step2: {
         on: {
-          previous: 'step1',
+          back: 'step1',
         },
       },
     });
@@ -62,12 +62,12 @@ describe('generateStatesFromSteps', () => {
       step2: {
         on: {
           next: 'step3',
-          previous: 'step1',
+          back: 'step1',
         },
       },
       step3: {
         on: {
-          previous: 'step2',
+          back: 'step2',
         },
       },
     });

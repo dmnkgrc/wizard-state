@@ -12,7 +12,7 @@ export const generateStatesFromSteps = <
     const state = {
       on: {
         ...(index < steps.length - 1 ? { next: steps[index + 1].name } : {}),
-        ...(index > 0 ? { previous: steps[index - 1].name } : {}),
+        ...(index > 0 ? { back: steps[index - 1].name } : {}),
       },
     };
     return {
