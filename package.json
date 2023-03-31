@@ -11,17 +11,26 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "bunchee ./src/index.ts",
-    "watch": "bunchee ./src/index.ts -w",
-    "test": "vitest",
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
-    "require": "dist/index.cjs",
-    "import": "dist/index.mjs",
-    "module": "dist/index.esm.js"
+    ".": [
+      {
+        "import": "./dist/index.mjs",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./dist/index.js"
+    ],
+    "./package.json": "./package.json"
   },
   "name": "wizard-state",
   "author": "Dominik Garcia Bertapelle",
@@ -38,11 +47,11 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^8.2.4",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
-    "bunchee": "^2.2.1",
     "husky": "^8.0.3",
     "prettier": "^2.8.7",
     "size-limit": "^8.2.4",
     "tslib": "^2.5.0",
+    "tsup": "^6.7.0",
     "typescript": "5.0.2",
     "vitest": "^0.29.8"
   },
