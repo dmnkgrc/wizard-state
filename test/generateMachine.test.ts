@@ -22,9 +22,7 @@ describe('generateMachine', () => {
     const { initialState } = machine;
 
     expect(initialState.matches('step1')).toEqual(true);
-    expect(machine.transition(initialState, 'back').matches('step1')).toEqual(
-      true
-    );
+    expect(initialState.can('back')).toEqual(false);
 
     const secondState = machine.transition(initialState, 'next');
     expect(secondState.matches('step2')).toEqual(true);
@@ -34,11 +32,8 @@ describe('generateMachine', () => {
 
     const thirdState = machine.transition(secondState, 'next');
     expect(thirdState.matches('step3')).toEqual(true);
-    expect(machine.transition(thirdState, 'next').matches('step3')).toEqual(
-      true
-    );
-    expect(machine.transition(thirdState, 'back').matches('step2')).toEqual(
-      true
-    );
+    expect(thirdState.can('next')).toEqual(false);
+    expect(thirdState.can('back')).toEqual(true);
+    expect(thirdState.done).toEqual(true);
   });
 });

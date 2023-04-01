@@ -13,11 +13,13 @@ export const generateStatesFromSteps = <TStepName extends string>(
   steps: Steps<TStepName>
 ): StatesConfig<unknown, StateSchema<NoInfer<TStepName>>, Event> => {
   return steps.reduce((states, step, index) => {
+    const isLast = index === steps.length - 1;
     const state = {
       on: {
-        ...(index < steps.length - 1 ? { next: steps[index + 1].name } : {}),
+        ...(!isLast ? { next: steps[index + 1].name } : {}),
         ...(index > 0 ? { back: steps[index - 1].name } : {}),
       },
+      ...(isLast ? { type: 'final' } : {}),
     };
     return {
       ...states,

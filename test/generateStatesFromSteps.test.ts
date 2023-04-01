@@ -16,6 +16,7 @@ describe('generateStatesFromSteps', () => {
     ).toEqual({
       step1: {
         on: {},
+        type: 'final',
       },
     });
 
@@ -38,6 +39,7 @@ describe('generateStatesFromSteps', () => {
         on: {
           back: 'step1',
         },
+        type: 'final',
       },
     });
 
@@ -69,6 +71,7 @@ describe('generateStatesFromSteps', () => {
         on: {
           back: 'step2',
         },
+        type: 'final',
       },
     });
   });
