@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { assertType, describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import { generateMachine } from '../src/generateMachine';
 
@@ -17,9 +18,27 @@ describe('generateMachine', () => {
           name: 'step3',
         },
       ],
+      schema: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string().email(),
+        age: z.number(),
+      }),
     });
 
-    const { initialState } = machine;
+    const { initialState, context } = machine;
+
+    assertType<{
+      bad: string;
+      // @ts-expect-error
+    }>(context);
+
+    assertType<{
+      firstName: string;
+      lastName: string;
+      email: string;
+      age: number;
+    }>(context);
 
     expect(initialState.matches('step1')).toEqual(true);
     expect(initialState.can('back')).toEqual(false);

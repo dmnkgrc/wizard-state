@@ -2,16 +2,16 @@ import { StatesConfig } from 'xstate';
 
 import { Event, NoInfer, Steps } from './types';
 
-type StateSchema<TStepName extends string> = {
-  context?: Partial<any>;
+type StateSchema<TValues, TStepName extends string> = {
+  context?: Partial<TValues>;
   states: {
-    [key in TStepName]: StateSchema<TStepName>;
+    [key in TStepName]: StateSchema<TValues, TStepName>;
   };
 };
 
-export const generateStatesFromSteps = <TStepName extends string>(
+export const generateStatesFromSteps = <TValues, TStepName extends string>(
   steps: Steps<TStepName>
-): StatesConfig<unknown, StateSchema<NoInfer<TStepName>>, Event> => {
+): StatesConfig<TValues, StateSchema<TValues, NoInfer<TStepName>>, Event> => {
   return steps.reduce((states, step, index) => {
     const isLast = index === steps.length - 1;
     const state = {
@@ -25,5 +25,5 @@ export const generateStatesFromSteps = <TStepName extends string>(
       ...states,
       [step.name]: state,
     };
-  }, {} as StatesConfig<unknown, StateSchema<NoInfer<TStepName>>, Event>);
+  }, {} as StatesConfig<TValues, StateSchema<TValues, NoInfer<TStepName>>, Event>);
 };
