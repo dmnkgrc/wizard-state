@@ -1,13 +1,17 @@
-import { StateNodeConfig, StateSchema } from 'xstate';
+import { StatesConfig } from 'xstate';
 
-import { Event, Steps } from './types';
+import { Event, NoInfer, Steps } from './types';
 
-export const generateStatesFromSteps = <
-  TStepName extends string,
-  TStateSchema extends StateSchema
->(
+type StateSchema<TStepName extends string> = {
+  context?: Partial<any>;
+  states: {
+    [key in TStepName]: StateSchema<TStepName>;
+  };
+};
+
+export const generateStatesFromSteps = <TStepName extends string>(
   steps: Steps<TStepName>
-): NonNullable<StateNodeConfig<unknown, TStateSchema, Event>['states']> => {
+): StatesConfig<unknown, StateSchema<NoInfer<TStepName>>, Event> => {
   return steps.reduce((states, step, index) => {
     const state = {
       on: {
@@ -19,5 +23,5 @@ export const generateStatesFromSteps = <
       ...states,
       [step.name]: state,
     };
-  }, {} as NonNullable<StateNodeConfig<unknown, TStateSchema, Event>['states']>);
+  }, {} as StatesConfig<unknown, StateSchema<NoInfer<TStepName>>, Event>);
 };
