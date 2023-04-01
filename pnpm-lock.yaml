@@ -1,47 +1,70 @@
 lockfileVersion: '6.0'
 
-dependencies:
-  jotai:
-    specifier: ^2.0.3
-    version: 2.0.3
-  jotai-xstate:
-    specifier: ^0.3.0
-    version: 0.3.0(jotai@2.0.3)(xstate@4.37.1)
-  xstate:
-    specifier: ^4.37.1
-    version: 4.37.1
-  zod:
-    specifier: ^3.21.4
-    version: 3.21.4
+importers:
 
-devDependencies:
-  '@size-limit/preset-small-lib':
-    specifier: ^8.2.4
-    version: 8.2.4(size-limit@8.2.4)
-  '@trivago/prettier-plugin-sort-imports':
-    specifier: ^4.1.1
-    version: 4.1.1(prettier@2.8.7)
-  husky:
-    specifier: ^8.0.3
-    version: 8.0.3
-  prettier:
-    specifier: ^2.8.7
-    version: 2.8.7
-  size-limit:
-    specifier: ^8.2.4
-    version: 8.2.4
-  tslib:
-    specifier: ^2.5.0
-    version: 2.5.0
-  tsup:
-    specifier: ^6.7.0
-    version: 6.7.0(typescript@5.0.2)
-  typescript:
-    specifier: 5.0.2
-    version: 5.0.2
-  vitest:
-    specifier: ^0.29.8
-    version: 0.29.8
+  .:
+    devDependencies:
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: ^4.1.1
+        version: 4.1.1(prettier@2.8.7)
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      prettier:
+        specifier: ^2.8.7
+        version: 2.8.7
+      tsup:
+        specifier: ^6.7.0
+        version: 6.7.0(typescript@5.0.2)
+      turbo:
+        specifier: ^1.8.8
+        version: 1.8.8
+      typescript:
+        specifier: 5.0.2
+        version: 5.0.2
+
+  packages/core:
+    dependencies:
+      jotai:
+        specifier: ^2.0.3
+        version: 2.0.3
+      jotai-xstate:
+        specifier: ^0.3.0
+        version: 0.3.0(jotai@2.0.3)(xstate@4.37.1)
+      xstate:
+        specifier: ^4.37.1
+        version: 4.37.1
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
+    devDependencies:
+      '@size-limit/preset-small-lib':
+        specifier: ^8.2.4
+        version: 8.2.4(size-limit@8.2.4)
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: ^4.1.1
+        version: 4.1.1(prettier@2.8.7)
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      prettier:
+        specifier: ^2.8.7
+        version: 2.8.7
+      size-limit:
+        specifier: ^8.2.4
+        version: 8.2.4
+      tslib:
+        specifier: ^2.5.0
+        version: 2.5.0
+      tsup:
+        specifier: ^6.7.0
+        version: 6.7.0(typescript@5.0.2)
+      typescript:
+        specifier: 5.0.2
+        version: 5.0.2
+      vitest:
+        specifier: ^0.29.8
+        version: 0.29.8
 
 packages:
 
@@ -57,7 +80,7 @@ packages:
     resolution: {integrity: sha512-oLcVCTeIFadUoArDTwpluncplrYBmTCCZZgXCbgNGvOBBiSDDK3eWO4b/+eOTli5tKv1lg+a5/NAXg+nTcei1w==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.17.0
+      '@babel/types': 7.21.3
       jsesc: 2.5.2
       source-map: 0.5.7
     dev: true
@@ -136,7 +159,7 @@ packages:
       '@babel/helper-hoist-variables': 7.18.6
       '@babel/helper-split-export-declaration': 7.18.6
       '@babel/parser': 7.21.3
-      '@babel/types': 7.17.0
+      '@babel/types': 7.21.3
       debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
@@ -1461,6 +1484,67 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - ts-node
+    dev: true
+
+  /turbo-darwin-64@1.8.8:
+    resolution: {integrity: sha512-18cSeIm7aeEvIxGyq7PVoFyEnPpWDM/0CpZvXKHpQ6qMTkfNt517qVqUTAwsIYqNS8xazcKAqkNbvU1V49n65Q==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-darwin-arm64@1.8.8:
+    resolution: {integrity: sha512-ruGRI9nHxojIGLQv1TPgN7ud4HO4V8mFBwSgO6oDoZTNuk5ybWybItGR+yu6fni5vJoyMHXOYA2srnxvOc7hjQ==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-64@1.8.8:
+    resolution: {integrity: sha512-N/GkHTHeIQogXB1/6ZWfxHx+ubYeb8Jlq3b/3jnU4zLucpZzTQ8XkXIAfJG/TL3Q7ON7xQ8yGOyGLhHL7MpFRg==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-linux-arm64@1.8.8:
+    resolution: {integrity: sha512-hKqLbBHgUkYf2Ww8uBL9UYdBFQ5677a7QXdsFhONXoACbDUPvpK4BKlz3NN7G4NZ+g9dGju+OJJjQP0VXRHb5w==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-64@1.8.8:
+    resolution: {integrity: sha512-2ndjDJyzkNslXxLt+PQuU21AHJWc8f6MnLypXy3KsN4EyX/uKKGZS0QJWz27PeHg0JS75PVvhfFV+L9t9i+Yyg==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo-windows-arm64@1.8.8:
+    resolution: {integrity: sha512-xCA3oxgmW9OMqpI34AAmKfOVsfDljhD5YBwgs0ZDsn5h3kCHhC4x9W5dDk1oyQ4F5EXSH3xVym5/xl1J6WRpUg==}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /turbo@1.8.8:
+    resolution: {integrity: sha512-qYJ5NjoTX+591/x09KgsDOPVDUJfU9GoS+6jszQQlLp1AHrf1wRFA3Yps8U+/HTG03q0M4qouOfOLtRQP4QypA==}
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      turbo-darwin-64: 1.8.8
+      turbo-darwin-arm64: 1.8.8
+      turbo-linux-64: 1.8.8
+      turbo-linux-arm64: 1.8.8
+      turbo-windows-64: 1.8.8
+      turbo-windows-arm64: 1.8.8
     dev: true
 
   /type-detect@4.0.8:
