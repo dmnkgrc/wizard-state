@@ -1,19 +1,13 @@
-import { createMachine } from 'xstate';
-import { z } from 'zod';
+import { Typestate, createMachine } from 'xstate';
 
 import { generateStatesFromSteps } from './generateStatesFromSteps';
 import { Event, Steps } from './types';
 
-export const generateMachine = <
-  TStepName extends string,
-  TSchema extends z.ZodTypeAny,
-  TValues = z.infer<TSchema>
->(options: {
+export const generateMachine = <TStepName extends string, TValues>(options: {
   name: string;
   steps: Steps<TStepName>;
-  schema: TSchema;
 }) => {
-  const machine = createMachine<TValues, Event, any>({
+  const machine = createMachine<TValues, Event, Typestate<TValues>>({
     predictableActionArguments: true,
     id: options.name,
     initial: options.steps[0].name,

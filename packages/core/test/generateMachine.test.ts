@@ -5,7 +5,16 @@ import { generateMachine } from '../src/generateMachine';
 
 describe('generateMachine', () => {
   it('generates a basic machine correctly', () => {
-    const machine = generateMachine({
+    const schema = z.object({
+      firstName: z.string(),
+      lastName: z.string(),
+      email: z.string().email(),
+      age: z.number(),
+    });
+    const machine = generateMachine<
+      'step1' | 'step2' | 'step3',
+      z.infer<typeof schema>
+    >({
       name: 'test-wizard',
       steps: [
         {
@@ -18,12 +27,6 @@ describe('generateMachine', () => {
           name: 'step3',
         },
       ],
-      schema: z.object({
-        firstName: z.string(),
-        lastName: z.string(),
-        email: z.string().email(),
-        age: z.number(),
-      }),
     });
 
     const { initialState, context } = machine;
