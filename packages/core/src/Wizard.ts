@@ -27,6 +27,7 @@ export class Wizard<
   TSchema extends z.ZodTypeAny,
   TValues = z.infer<TSchema>
 > {
+  private _store: ReturnType<typeof getDefaultStore>;
   private _schema: z.ZodTypeAny;
   private _machineAtom: WritableAtom<
     StateFrom<TMachine<TValues>>,
@@ -37,6 +38,7 @@ export class Wizard<
     void
   >;
   constructor(name: string, steps: Steps<TStepName>, schema: TSchema) {
+    this._store = getDefaultStore();
     this._schema = schema;
     // @ts-expect-error jotai complains about types not being compatible
     this._machineAtom = atomWithMachine(() =>
@@ -52,7 +54,11 @@ export class Wizard<
   }
 
   nextStep() {
-    const store = getDefaultStore();
-    store.set(this._machineAtom, 'next');
+    this._store.set(this._machineAtom, 'next');
+  }
+
+  getCurrentStep() {
+    console.log(this._store.get(this._machineAtom));
+    return this._store.get(this._machineAtom).value;
   }
 }
