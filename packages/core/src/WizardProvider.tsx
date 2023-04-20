@@ -5,29 +5,31 @@ import React from 'react';
 import { generateMachine } from './generateMachine';
 import { Steps } from './types';
 
-const WizardContext = React.createContext<{
-  goToNextStep: () => void;
-  goToPreviousStep: () => void;
-  currentStep: string;
-}>({
-  currentStep: '',
-  goToNextStep: () => {},
-  goToPreviousStep: () => {},
-});
+const WizardContext = React.createContext<
+  | {
+      goToNextStep: () => void;
+      goToPreviousStep: () => void;
+      currentStep: string;
+    }
+  | undefined
+>(undefined);
 
 export const WizardProvider = <TStepName extends string>(props: {
   name: string;
   steps: Steps<TStepName>;
   children: React.ReactNode;
 }) => {
-  const [state, send] = useAtom(
-    atomWithMachine(
-      generateMachine({
-        name: props.name,
-        steps: props.steps,
-      })
-    )
+  const generatedAtomWithMachine = React.useMemo(
+    () =>
+      atomWithMachine(
+        generateMachine({
+          name: props.name,
+          steps: props.steps,
+        })
+      ),
+    [props.name, props.steps]
   );
+  const [state, send] = useAtom(generatedAtomWithMachine);
 
   const goToNextStep = () => {
     send({ type: 'next' });

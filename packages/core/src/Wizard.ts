@@ -57,8 +57,15 @@ export class Wizard<
     this._store.set(this._machineAtom, 'next');
   }
 
+  previousStep() {
+    this._store.set(this._machineAtom, 'back');
+  }
+
   getCurrentStep() {
-    console.log(this._store.get(this._machineAtom));
     return this._store.get(this._machineAtom).value;
+  }
+
+  sub(listener: () => void) {
+    return this._store.sub(this._machineAtom, listener);
   }
 }
