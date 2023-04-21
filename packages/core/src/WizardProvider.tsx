@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { atomWithMachine } from 'jotai-xstate';
+import { RESTART, atomWithMachine } from 'jotai-xstate';
 import React from 'react';
 
 import { generateMachine } from './generateMachine';
@@ -9,6 +9,7 @@ const WizardContext = React.createContext<
   | {
       goToNextStep: () => void;
       goToPreviousStep: () => void;
+      restart: () => void;
       currentStep: string;
     }
   | undefined
@@ -39,12 +40,17 @@ export const WizardProvider = <TStepName extends string>(props: {
     send({ type: 'back' });
   };
 
+  const restart = () => {
+    send(RESTART);
+  };
+
   return (
     <WizardContext.Provider
       value={{
         currentStep: state.value as TStepName,
         goToNextStep,
         goToPreviousStep,
+        restart,
       }}
     >
       {props.children}

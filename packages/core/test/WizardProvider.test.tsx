@@ -7,13 +7,15 @@ import { WizardProvider, useWizard } from '../src/WizardProvider';
 describe('Wizard Provider', () => {
   it('can navigate back and forth', async ({ expect }) => {
     const TestApp = () => {
-      const { currentStep, goToNextStep, goToPreviousStep } = useWizard();
+      const { currentStep, goToNextStep, goToPreviousStep, restart } =
+        useWizard();
 
       return (
         <div>
           <h1>{currentStep}</h1>
           <button onClick={goToPreviousStep}>Back</button>
           <button onClick={goToNextStep}>Next</button>
+          <button onClick={restart}>Restart</button>
         </div>
       );
     };
@@ -43,5 +45,7 @@ describe('Wizard Provider', () => {
     screen.getByText('Back').click();
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(await screen.findByText('step3')).toBeTruthy();
+    screen.getByText('Restart').click();
+    expect(await screen.findByText('step1')).toBeTruthy();
   });
 });
