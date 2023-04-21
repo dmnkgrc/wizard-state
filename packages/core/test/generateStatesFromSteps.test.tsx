@@ -15,6 +15,9 @@ describe('generateStatesFromSteps', () => {
       ])
     ).toEqual({
       step1: {
+        meta: {
+          schema: undefined,
+        },
         on: {},
         type: 'final',
       },
@@ -31,11 +34,17 @@ describe('generateStatesFromSteps', () => {
       ])
     ).toEqual({
       step1: {
+        meta: {
+          schema: undefined,
+        },
         on: {
           next: 'step2',
         },
       },
       step2: {
+        meta: {
+          schema: undefined,
+        },
         on: {
           back: 'step1',
         },
@@ -57,17 +66,26 @@ describe('generateStatesFromSteps', () => {
       ])
     ).toEqual({
       step1: {
+        meta: {
+          schema: undefined,
+        },
         on: {
           next: 'step2',
         },
       },
       step2: {
+        meta: {
+          schema: undefined,
+        },
         on: {
           next: 'step3',
           back: 'step1',
         },
       },
       step3: {
+        meta: {
+          schema: undefined,
+        },
         on: {
           back: 'step2',
         },

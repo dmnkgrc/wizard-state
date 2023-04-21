@@ -26,6 +26,7 @@ export const WizardProvider = <TStepName extends string>(props: {
         generateMachine({
           name: props.name,
           steps: props.steps,
+          schemas: {},
         })
       ),
     [props.name, props.steps]

@@ -1,4 +1,5 @@
 import { StatesConfig } from 'xstate';
+import { ZodTypeAny, z } from 'zod';
 
 import { Event, NoInfer, Steps } from './types';
 
@@ -9,9 +10,13 @@ type StateSchema<TValues, TStepName extends string> = {
   };
 };
 
-export const generateStatesFromSteps = <TValues, TStepName extends string>(
-  steps: Steps<TStepName>
-): StatesConfig<TValues, StateSchema<TValues, NoInfer<TStepName>>, Event> => {
+export const generateStatesFromSteps = <
+  TStepName extends string,
+  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>
+>(
+  steps: Steps<TStepName>,
+  schemas?: TSchemas
+) => {
   return steps.reduce((states, step, index) => {
     const isLast = index === steps.length - 1;
     const state = {
@@ -20,10 +25,13 @@ export const generateStatesFromSteps = <TValues, TStepName extends string>(
         ...(index > 0 ? { back: steps[index - 1].name } : {}),
       },
       ...(isLast ? { type: 'final' } : {}),
+      meta: {
+        schema: schemas?.[step.name],
+      },
     };
     return {
       ...states,
       [step.name]: state,
     };
-  }, {} as StatesConfig<TValues, StateSchema<TValues, NoInfer<TStepName>>, Event>);
+  }, {});
 };
