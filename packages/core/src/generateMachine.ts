@@ -1,5 +1,5 @@
 import { Typestate, createMachine } from 'xstate';
-import { ZodType, ZodTypeAny, z } from 'zod';
+import { ZodTypeAny, z } from 'zod';
 
 import { generateStatesFromSteps } from './generateStatesFromSteps';
 import { Event, Steps, UnionToIntersectionSchema } from './types';
