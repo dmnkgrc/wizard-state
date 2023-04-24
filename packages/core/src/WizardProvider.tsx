@@ -1,23 +1,29 @@
 import { useAtom } from 'jotai';
 import { RESTART, atomWithMachine } from 'jotai-xstate';
 import React from 'react';
+import { ZodTypeAny } from 'zod';
 
 import { generateMachine } from './generateMachine';
 import { Steps } from './types';
 
 const WizardContext = React.createContext<
   | {
-      goToNextStep: () => void;
+      goToNextStep: (values?: unknown) => void;
       goToPreviousStep: () => void;
       restart: () => void;
       currentStep: string;
+      schema?: ZodTypeAny;
     }
   | undefined
 >(undefined);
 
-export const WizardProvider = <TStepName extends string>(props: {
+export const WizardProvider = <
+  TStepName extends string,
+  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>
+>(props: {
   name: string;
   steps: Steps<TStepName>;
+  schemas: TSchemas;
   children: React.ReactNode;
 }) => {
   const generatedAtomWithMachine = React.useMemo(
@@ -33,8 +39,8 @@ export const WizardProvider = <TStepName extends string>(props: {
   );
   const [state, send] = useAtom(generatedAtomWithMachine);
 
-  const goToNextStep = () => {
-    send({ type: 'next' });
+  const goToNextStep = (values?: unknown) => {
+    send({ type: 'next', values });
   };
 
   const goToPreviousStep = () => {
@@ -49,6 +55,7 @@ export const WizardProvider = <TStepName extends string>(props: {
     <WizardContext.Provider
       value={{
         currentStep: state.value as TStepName,
+        schema: state.meta.schema,
         goToNextStep,
         goToPreviousStep,
         restart,

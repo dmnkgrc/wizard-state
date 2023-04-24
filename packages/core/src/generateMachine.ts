@@ -2,7 +2,7 @@ import { Typestate, createMachine } from 'xstate';
 import { ZodTypeAny, z } from 'zod';
 
 import { generateStatesFromSteps } from './generateStatesFromSteps';
-import { Event, Steps, UnionToIntersectionSchema } from './types';
+import { Event, Steps, ValuesFromSchemas } from './types';
 
 export const generateMachine = <
   TStepName extends string,
@@ -12,12 +12,7 @@ export const generateMachine = <
   steps: Steps<TStepName>;
   schemas: TSchemas;
 }) => {
-  type SchemaKey = keyof TSchemas;
-
-  type TValues = z.infer<
-    // @ts-expect-error zod will correctly infer the type
-    UnionToIntersectionSchema<Exclude<TSchemas[SchemaKey], undefined>>
-  >;
+  type TValues = ValuesFromSchemas<TSchemas>;
   const machine = createMachine<TValues, Event, Typestate<TValues>>({
     predictableActionArguments: true,
     id: options.name,
