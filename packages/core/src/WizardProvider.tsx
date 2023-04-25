@@ -1,6 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtom } from 'jotai';
 import { RESTART, atomWithMachine } from 'jotai-xstate';
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { ZodTypeAny } from 'zod';
 
 import { generateMachine } from './generateMachine';
@@ -8,7 +10,7 @@ import { Steps } from './types';
 
 const WizardContext = React.createContext<
   | {
-      goToNextStep: (values?: unknown) => void;
+      goToNextStep: () => void;
       goToPreviousStep: () => void;
       restart: () => void;
       currentStep: string;
@@ -32,12 +34,17 @@ export const WizardProvider = <
         generateMachine({
           name: props.name,
           steps: props.steps,
-          schemas: {},
+          schemas: props.schemas,
         })
       ),
-    [props.name, props.steps]
+    [props.name, props.steps, props.schemas]
   );
   const [state, send] = useAtom(generatedAtomWithMachine);
+
+  const schema = React.useMemo(
+    () => state.meta[`${props.name}.${state.value}`]?.schema,
+    [state]
+  );
 
   const goToNextStep = (values?: unknown) => {
     send({ type: 'next', values });
@@ -51,12 +58,16 @@ export const WizardProvider = <
     send(RESTART);
   };
 
+  const form = useForm({
+    resolver: schema ? zodResolver(schema) : undefined,
+  });
+
   return (
     <WizardContext.Provider
       value={{
         currentStep: state.value as TStepName,
         schema: state.meta.schema,
-        goToNextStep,
+        goToNextStep: form.handleSubmit(goToNextStep),
         goToPreviousStep,
         restart,
       }}

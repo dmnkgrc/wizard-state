@@ -25,12 +25,18 @@ importers:
 
   packages/core:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.1.0
+        version: 3.1.0(react-hook-form@7.43.9)
       jotai:
         specifier: ^2.0.3
         version: 2.0.3(react@18.2.0)
       jotai-xstate:
         specifier: ^0.3.0
         version: 0.3.0(jotai@2.0.3)(xstate@4.37.1)
+      react-hook-form:
+        specifier: ^7.43.9
+        version: 7.43.9(react@18.2.0)
       xstate:
         specifier: ^4.37.1
         version: 4.37.1
@@ -409,6 +415,14 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@hookform/resolvers@3.1.0(react-hook-form@7.43.9):
+    resolution: {integrity: sha512-z0A8K+Nxq+f83Whm/ajlwE6VtQlp/yPHZnXw7XWVPIGm1Vx0QV8KThU3BpbBRfAZ7/dYqCKKBNnQh85BkmBKkA==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.9(react@18.2.0)
+    dev: false
 
   /@jest/expect-utils@29.5.0:
     resolution: {integrity: sha512-fmKzsidoXQT2KwnrwE0SQq3uj8Z763vzR8LnLBwC2qYWEFpjX8daRsk6rHUM1QvNlEW/UJXNXm59ztmJJWs2Mg==}
@@ -2065,6 +2079,15 @@ packages:
       react: 18.2.0
       scheduler: 0.23.0
     dev: true
+
+  /react-hook-form@7.43.9(react@18.2.0):
+    resolution: {integrity: sha512-AUDN3Pz2NSeoxQ7Hs6OhQhDr6gtF9YRuutGDwPQqhSUAHJSgGl2VeY3qN19MG0SucpjgDiuMJ4iC5T5uB+eaNQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}

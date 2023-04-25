@@ -17,7 +17,10 @@ export const generateMachine = <
     predictableActionArguments: true,
     id: options.name,
     initial: options.steps[0].name,
-    states: generateStatesFromSteps<TStepName, TSchemas>(options.steps),
+    states: generateStatesFromSteps<TStepName, TSchemas>(
+      options.steps,
+      options.schemas
+    ),
   });
   return machine;
 };
