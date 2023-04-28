@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
@@ -53,6 +54,7 @@ describe('Wizard Provider', () => {
 
   it("can't navigate until values are valid", async () => {
     const TestApp = () => {
+      const { setValue: setValueRHF } = useFormContext();
       const { currentStep, goToNextStep, goToPreviousStep, restart } =
         useWizard();
       const [value, setValue] = React.useState('');
@@ -64,7 +66,16 @@ describe('Wizard Provider', () => {
             type="text"
             name="value"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (newValue) {
+                const values = JSON.parse(newValue);
+                Object.entries(values).forEach(([key, value]) => {
+                  setValueRHF(key, value);
+                });
+              }
+              setValue(newValue);
+            }}
           />
           <button onClick={goToPreviousStep}>Back</button>
           <button onClick={() => goToNextStep()}>Next</button>
@@ -94,5 +105,15 @@ describe('Wizard Provider', () => {
     );
     expect(await screen.findByText('step1')).toBeInTheDocument();
     screen.getByText('Next').click();
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '{"firstName": "Dominik", "lastName": "Garcia"}' },
+    });
+    screen.getByText('Next').click();
+    expect(await screen.findByText('step2')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: '{"age": 18}' },
+    });
+    screen.getByText('Next').click();
+    expect(await screen.findByText('step3')).toBeInTheDocument();
   });
 });

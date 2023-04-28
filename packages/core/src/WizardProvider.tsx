@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtom } from 'jotai';
 import { RESTART, atomWithMachine } from 'jotai-xstate';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { ZodTypeAny } from 'zod';
 
 import { generateMachine } from './generateMachine';
@@ -72,7 +72,7 @@ export const WizardProvider = <
         restart,
       }}
     >
-      {props.children}
+      <FormProvider {...form}>{props.children}</FormProvider>
     </WizardContext.Provider>
   );
 };
