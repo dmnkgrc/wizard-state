@@ -1,10 +1,45 @@
 import { assertType, describe, expect, it } from 'vitest';
-import { z } from 'zod';
+import { ZodError, ZodIssueCode, z } from 'zod';
 
 import { generateMachine } from '../src/generateMachine';
 
 describe('generateMachine', () => {
   it('generates a basic machine correctly', () => {
+    const machine = generateMachine({
+      name: 'test-wizard',
+      schemas: {},
+      steps: [
+        {
+          name: 'step1',
+        },
+        {
+          name: 'step2',
+        },
+        {
+          name: 'step3',
+        },
+      ],
+    });
+
+    const { initialState } = machine;
+
+    expect(initialState.matches('step1')).toEqual(true);
+    expect(initialState.can('back')).toEqual(false);
+
+    const secondState = machine.transition(initialState, 'next');
+    expect(secondState.matches('step2')).toEqual(true);
+    expect(machine.transition(secondState, 'back').matches('step1')).toEqual(
+      true
+    );
+
+    const thirdState = machine.transition(secondState, 'next');
+    expect(thirdState.matches('step3')).toEqual(true);
+    expect(thirdState.can('next')).toEqual(false);
+    expect(thirdState.can('back')).toEqual(true);
+    expect(thirdState.done).toEqual(true);
+  });
+
+  it('validates and stores values', () => {
     const machine = generateMachine({
       name: 'test-wizard',
       schemas: {
@@ -35,30 +70,50 @@ describe('generateMachine', () => {
     const { initialState, context } = machine;
 
     assertType<{
-      bad: string;
+      values: { bad: string };
       // @ts-expect-error
     }>(context);
 
     assertType<{
-      firstName: string;
-      lastName: string;
-      email: string;
-      age: number;
+      values: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        age: number;
+      };
     }>(context);
 
     expect(initialState.matches('step1')).toEqual(true);
     expect(initialState.can('back')).toEqual(false);
 
     const secondState = machine.transition(initialState, 'next');
-    expect(secondState.matches('step2')).toEqual(true);
-    expect(machine.transition(secondState, 'back').matches('step1')).toEqual(
-      true
-    );
-
-    const thirdState = machine.transition(secondState, 'next');
-    expect(thirdState.matches('step3')).toEqual(true);
-    expect(thirdState.can('next')).toEqual(false);
-    expect(thirdState.can('back')).toEqual(true);
-    expect(thirdState.done).toEqual(true);
+    expect(secondState.matches('step1')).toEqual(true);
+    expect(secondState.context).toEqual({
+      error: new ZodError([
+        {
+          code: ZodIssueCode.invalid_type,
+          expected: 'object',
+          received: 'undefined',
+          path: [],
+          message: 'Required',
+        },
+      ]),
+      values: {},
+    });
+    const thirdState = machine.transition(secondState, {
+      type: 'next',
+      values: {
+        firstName: 'Dominik',
+        lastName: 'Garcia',
+      },
+    });
+    expect(thirdState.matches('step2')).toEqual(true);
+    expect(thirdState.context).toEqual({
+      error: undefined,
+      values: {
+        firstName: 'Dominik',
+        lastName: 'Garcia',
+      },
+    });
   });
 });
