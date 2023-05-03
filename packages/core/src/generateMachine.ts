@@ -6,61 +6,76 @@ import { Event, Steps, ValuesFromSchemas } from './types';
 
 export const generateMachine = <
   TStepName extends string,
-  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>
+  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>,
 >(options: {
   name: string;
-  steps: Steps<TStepName>;
   schemas: TSchemas;
+  steps: Steps<TStepName>;
 }) => {
   type TValues = ValuesFromSchemas<TSchemas>;
   type TContext = {
-    values: TValues;
     error?: ZodError;
+    values: TValues;
   };
 
   const machine = createMachine<TContext, Event, Typestate<TContext>>(
     {
-      predictableActionArguments: true,
-      id: options.name,
-      initial: options.steps[0].name,
-      states: generateStatesFromSteps<TStepName, TSchemas>(
-        options.steps,
-        options.schemas
-      ),
       context: {
         values: {} as TValues,
       },
+      id: options.name,
+      initial: options.steps[0].name,
+      predictableActionArguments: true,
+      states: generateStatesFromSteps<TStepName, TSchemas>(
+        options.steps,
+        options.schemas,
+      ),
     },
     {
       actions: {
-        // addErrorToContext: assign<TContext>(
-        //   (_prevContext, event: Event & { values?: unknown }, meta) => {
-        //     console.log('WHAAT');
-        //     const stepName = meta.state?.value as TStepName;
-        //     const schema = options.schemas[stepName];
-        //     if (!schema) {
-        //       throw new Error(
-        //         `Expected step ${stepName} to have schema but did not find one`
-        //       );
-        //     }
-        //     const res = schema.safeParse(event.values);
-        //     if (res.success) {
-        //       throw new Error(
-        //         `Expected validation to faile for step ${stepName}`
-        //       );
-        //     }
-        //     console.log('HELLOOOOO');
-        //     assign(() => ({
-        //       error: 'Byke',
-        //     }));
-        //     return {
-        //       error: res.success ? undefined : res.error,
-        //     };
-        //   }
-        // ),
+        updateValues: assign((prevContext, event, meta) => {
+          const stepName = meta.state?.value as TStepName;
+          const schema = options.schemas?.[stepName];
+          const values = 'values' in event ? event.values : undefined;
+          if (!schema || !values) {
+            return prevContext;
+          }
+          const res = schema.safeParse(values);
+          if (!res.success) {
+            throw new Error(
+              `Expected validation to succeed for step ${stepName}`,
+            );
+          }
+          return {
+            error: undefined,
+            values: {
+              ...prevContext.values,
+              ...res.data,
+            },
+          };
+        }),
+        validationError: assign({
+          error: (_prevContext, event, meta) => {
+            const stepName = meta.state?.value as TStepName;
+            const schema = options.schemas[stepName];
+            if (!schema) {
+              throw new Error(
+                `Expected step ${stepName} to have schema but did not find one`,
+              );
+            }
+            const values = 'values' in event ? event.values : undefined;
+            const res = schema.safeParse(values);
+            if (res.success) {
+              throw new Error(
+                `Expected validation to faile for step ${stepName}`,
+              );
+            }
+            return res.error;
+          },
+        }),
       },
       guards: {
-        areValuesValid: (context, event, meta) => {
+        areValuesValid: (_context, event, meta) => {
           if (event.type !== 'next') {
             return true;
           }
@@ -72,7 +87,7 @@ export const generateMachine = <
           return res.success;
         },
       },
-    }
+    },
   );
   return machine;
 };

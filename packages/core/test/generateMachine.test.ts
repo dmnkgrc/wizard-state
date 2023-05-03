@@ -29,7 +29,7 @@ describe('generateMachine', () => {
     const secondState = machine.transition(initialState, 'next');
     expect(secondState.matches('step2')).toEqual(true);
     expect(machine.transition(secondState, 'back').matches('step1')).toEqual(
-      true
+      true,
     );
 
     const thirdState = machine.transition(secondState, 'next');
@@ -76,10 +76,10 @@ describe('generateMachine', () => {
 
     assertType<{
       values: {
+        age: number;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
-        age: number;
       };
     }>(context);
 
@@ -94,7 +94,10 @@ describe('generateMachine', () => {
           code: ZodIssueCode.invalid_type,
           expected: 'object',
           received: 'undefined',
+          // We disable sort-keys-fix for this test sicne otherwise the values would not match
+          // eslint-disable-next-line sort-keys-fix/sort-keys-fix
           path: [],
+          // eslint-disable-next-line sort-keys-fix/sort-keys-fix
           message: 'Required',
         },
       ]),
@@ -109,6 +112,16 @@ describe('generateMachine', () => {
     });
     expect(thirdState.matches('step2')).toEqual(true);
     expect(thirdState.context).toEqual({
+      error: undefined,
+      values: {
+        firstName: 'Dominik',
+        lastName: 'Garcia',
+      },
+    });
+    expect(machine.transition(thirdState, 'back').matches('step1')).toEqual(
+      true,
+    );
+    expect(machine.transition(thirdState, 'back').context).toEqual({
       error: undefined,
       values: {
         firstName: 'Dominik',

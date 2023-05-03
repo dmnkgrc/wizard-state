@@ -10,10 +10,10 @@ import { Steps } from './types';
 
 const WizardContext = React.createContext<
   | {
+      currentStep: string;
       goToNextStep: () => void;
       goToPreviousStep: () => void;
       restart: () => void;
-      currentStep: string;
       schema?: ZodTypeAny;
     }
   | undefined
@@ -21,29 +21,29 @@ const WizardContext = React.createContext<
 
 export const WizardProvider = <
   TStepName extends string,
-  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>
+  TSchemas extends Partial<Record<TStepName, ZodTypeAny>>,
 >(props: {
-  name: string;
-  steps: Steps<TStepName>;
-  schemas: TSchemas;
   children: React.ReactNode;
+  name: string;
+  schemas: TSchemas;
+  steps: Steps<TStepName>;
 }) => {
   const generatedAtomWithMachine = React.useMemo(
     () =>
       atomWithMachine(
         generateMachine({
           name: props.name,
-          steps: props.steps,
           schemas: props.schemas,
-        })
+          steps: props.steps,
+        }),
       ),
-    [props.name, props.steps, props.schemas]
+    [props.name, props.steps, props.schemas],
   );
   const [state, send] = useAtom(generatedAtomWithMachine);
 
   const schema = React.useMemo(
     () => state.meta[`${props.name}.${state.value}`]?.schema,
-    [state]
+    [props.name, state.meta, state.value],
   );
 
   const goToNextStep = (values?: unknown) => {
@@ -66,10 +66,10 @@ export const WizardProvider = <
     <WizardContext.Provider
       value={{
         currentStep: state.value as TStepName,
-        schema: state.meta.schema,
         goToNextStep: form.handleSubmit(goToNextStep),
         goToPreviousStep,
         restart,
+        schema: state.meta.schema,
       }}
     >
       <FormProvider {...form}>{props.children}</FormProvider>

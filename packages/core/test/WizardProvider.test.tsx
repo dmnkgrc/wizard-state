@@ -23,12 +23,12 @@ describe('Wizard Provider', () => {
     };
     render(
       <WizardProvider
-        schemas={{}}
         name="test-wizard"
+        schemas={{}}
         steps={[{ name: 'step1' }, { name: 'step2' }, { name: 'step3' }]}
       >
         <TestApp />
-      </WizardProvider>
+      </WizardProvider>,
     );
     expect(await screen.findByText('step1')).toBeInTheDocument();
     screen.getByText('Back').click();
@@ -63,9 +63,7 @@ describe('Wizard Provider', () => {
         <div>
           <h1>{currentStep}</h1>
           <input
-            type="text"
             name="value"
-            value={value}
             onChange={(e) => {
               const newValue = e.target.value;
               if (newValue) {
@@ -76,6 +74,8 @@ describe('Wizard Provider', () => {
               }
               setValue(newValue);
             }}
+            type="text"
+            value={value}
           />
           <button onClick={goToPreviousStep}>Back</button>
           <button onClick={() => goToNextStep()}>Next</button>
@@ -85,6 +85,7 @@ describe('Wizard Provider', () => {
     };
     render(
       <WizardProvider
+        name="test-wizard"
         schemas={{
           step1: z.object({
             firstName: z.string(),
@@ -97,11 +98,10 @@ describe('Wizard Provider', () => {
             email: z.string().email(),
           }),
         }}
-        name="test-wizard"
         steps={[{ name: 'step1' }, { name: 'step2' }, { name: 'step3' }]}
       >
         <TestApp />
-      </WizardProvider>
+      </WizardProvider>,
     );
     expect(await screen.findByText('step1')).toBeInTheDocument();
     screen.getByText('Next').click();

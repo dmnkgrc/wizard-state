@@ -12,7 +12,7 @@ describe('generateStatesFromSteps', () => {
         {
           name: 'step1',
         },
-      ])
+      ]),
     ).toEqual({
       step1: {
         meta: {
@@ -31,14 +31,24 @@ describe('generateStatesFromSteps', () => {
         {
           name: 'step2',
         },
-      ])
+      ]),
     ).toEqual({
       step1: {
         meta: {
           schema: undefined,
         },
         on: {
-          next: 'step2',
+          next: [
+            {
+              actions: 'updateValues',
+              cond: 'areValuesValid',
+              target: 'step2',
+            },
+            {
+              actions: 'validationError',
+              internal: true,
+            },
+          ],
         },
       },
       step2: {
@@ -63,14 +73,24 @@ describe('generateStatesFromSteps', () => {
         {
           name: 'step3',
         },
-      ])
+      ]),
     ).toEqual({
       step1: {
         meta: {
           schema: undefined,
         },
         on: {
-          next: 'step2',
+          next: [
+            {
+              actions: 'updateValues',
+              cond: 'areValuesValid',
+              target: 'step2',
+            },
+            {
+              actions: 'validationError',
+              internal: true,
+            },
+          ],
         },
       },
       step2: {
@@ -78,8 +98,18 @@ describe('generateStatesFromSteps', () => {
           schema: undefined,
         },
         on: {
-          next: 'step3',
           back: 'step1',
+          next: [
+            {
+              actions: 'updateValues',
+              cond: 'areValuesValid',
+              target: 'step3',
+            },
+            {
+              actions: 'validationError',
+              internal: true,
+            },
+          ],
         },
       },
       step3: {

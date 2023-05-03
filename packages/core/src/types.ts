@@ -9,7 +9,7 @@ export type UnionToIntersectionSchema<U> = (
   : never;
 
 export type ValuesFromSchemas<
-  TSchemas extends Partial<Record<string, ZodTypeAny>>
+  TSchemas extends Partial<Record<string, ZodTypeAny>>,
 > = z.infer<
   // @ts-expect-error zod will correctly infer the type
   UnionToIntersectionSchema<Exclude<TSchemas[keyof TSchemas], undefined>>
@@ -21,7 +21,7 @@ export type Step<TStepName extends string> = {
 
 export type Steps<TStepName extends string> = [
   Step<TStepName>,
-  ...Step<TStepName>[]
+  ...Step<TStepName>[],
 ];
 
 export type Event =
