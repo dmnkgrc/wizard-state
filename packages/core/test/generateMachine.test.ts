@@ -87,6 +87,7 @@ describe('generateMachine', () => {
     expect(initialState.can('back')).toEqual(false);
 
     const secondState = machine.transition(initialState, 'next');
+    expect(secondState.matches('step1.error')).toEqual(true);
     expect(secondState.matches('step1')).toEqual(true);
     expect(secondState.context).toEqual({
       error: new ZodError([

@@ -15,10 +15,15 @@ describe('generateStatesFromSteps', () => {
       ]),
     ).toEqual({
       step1: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
         on: {},
+        states: {
+          error: {},
+          valid: {},
+        },
         type: 'final',
       },
     });
@@ -34,6 +39,7 @@ describe('generateStatesFromSteps', () => {
       ]),
     ).toEqual({
       step1: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
@@ -46,17 +52,26 @@ describe('generateStatesFromSteps', () => {
             },
             {
               actions: 'validationError',
-              internal: true,
+              target: '.error',
             },
           ],
         },
+        states: {
+          error: {},
+          valid: {},
+        },
       },
       step2: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
         on: {
           back: 'step1',
+        },
+        states: {
+          error: {},
+          valid: {},
         },
         type: 'final',
       },
@@ -76,6 +91,7 @@ describe('generateStatesFromSteps', () => {
       ]),
     ).toEqual({
       step1: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
@@ -88,12 +104,17 @@ describe('generateStatesFromSteps', () => {
             },
             {
               actions: 'validationError',
-              internal: true,
+              target: '.error',
             },
           ],
         },
+        states: {
+          error: {},
+          valid: {},
+        },
       },
       step2: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
@@ -107,17 +128,26 @@ describe('generateStatesFromSteps', () => {
             },
             {
               actions: 'validationError',
-              internal: true,
+              target: '.error',
             },
           ],
         },
+        states: {
+          error: {},
+          valid: {},
+        },
       },
       step3: {
+        initial: 'valid',
         meta: {
           schema: undefined,
         },
         on: {
           back: 'step2',
+        },
+        states: {
+          error: {},
+          valid: {},
         },
         type: 'final',
       },

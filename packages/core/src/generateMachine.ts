@@ -1,8 +1,26 @@
-import { Typestate, assign, createMachine } from 'xstate';
+import {
+  AssignMeta,
+  GuardMeta,
+  Typestate,
+  assign,
+  createMachine,
+} from 'xstate';
 import { ZodError, ZodTypeAny } from 'zod';
 
 import { generateStatesFromSteps } from './generateStatesFromSteps';
 import { Event, Steps, ValuesFromSchemas } from './types';
+
+const getStepNameFromMeta = <
+  TMeta extends GuardMeta<any, Event> | AssignMeta<any, Event>,
+  TStepName extends string,
+>(
+  meta: TMeta,
+): TStepName => {
+  if (typeof meta.state?.value === 'string') {
+    return meta.state.value as TStepName;
+  }
+  return Object.keys(meta.state?.value ?? {})[0] as TStepName;
+};
 
 export const generateMachine = <
   TStepName extends string,
@@ -34,7 +52,10 @@ export const generateMachine = <
     {
       actions: {
         updateValues: assign((prevContext, event, meta) => {
-          const stepName = meta.state?.value as TStepName;
+          const stepName = getStepNameFromMeta<
+            AssignMeta<TContext, Event>,
+            TStepName
+          >(meta);
           const schema = options.schemas?.[stepName];
           const values = 'values' in event ? event.values : undefined;
           if (!schema || !values) {
@@ -56,7 +77,10 @@ export const generateMachine = <
         }),
         validationError: assign({
           error: (_prevContext, event, meta) => {
-            const stepName = meta.state?.value as TStepName;
+            const stepName = getStepNameFromMeta<
+              AssignMeta<TContext, Event>,
+              TStepName
+            >(meta);
             const schema = options.schemas[stepName];
             if (!schema) {
               throw new Error(
@@ -79,7 +103,13 @@ export const generateMachine = <
           if (event.type !== 'next') {
             return true;
           }
-          const schema = options.schemas[meta.state.value as TStepName];
+          const stepName = getStepNameFromMeta<
+            GuardMeta<TContext, Event>,
+            TStepName
+          >(meta);
+          console.log('[stepName]', stepName);
+          const schema = options.schemas[stepName];
+          console.log('[schema]', schema);
           if (!schema) {
             return true;
           }

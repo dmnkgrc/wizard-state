@@ -12,6 +12,7 @@ export const generateStatesFromSteps = <
   return steps.reduce((states, step, index) => {
     const isLast = index === steps.length - 1;
     const state = {
+      initial: 'valid',
       on: {
         ...(!isLast
           ? {
@@ -23,12 +24,16 @@ export const generateStatesFromSteps = <
                 },
                 {
                   actions: 'validationError',
-                  internal: true,
+                  target: '.error',
                 },
               ],
             }
           : {}),
         ...(index > 0 ? { back: steps[index - 1].name } : {}),
+      },
+      states: {
+        error: {},
+        valid: {},
       },
       ...(isLast ? { type: 'final' } : {}),
       meta: {

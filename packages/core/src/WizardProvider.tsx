@@ -41,6 +41,13 @@ export const WizardProvider = <
   );
   const [state, send] = useAtom(generatedAtomWithMachine);
 
+  const currentStep = React.useMemo(() => {
+    if (typeof state.value === 'string') {
+      return state.value as TStepName;
+    }
+    return Object.keys(state.value)[0] as TStepName;
+  }, [state.value]);
+
   const schema = React.useMemo(
     () => state.meta[`${props.name}.${state.value}`]?.schema,
     [props.name, state.meta, state.value],
@@ -65,7 +72,7 @@ export const WizardProvider = <
   return (
     <WizardContext.Provider
       value={{
-        currentStep: state.value as TStepName,
+        currentStep,
         goToNextStep: form.handleSubmit(goToNextStep),
         goToPreviousStep,
         restart,
