@@ -15,13 +15,17 @@ export type ValuesFromSchemas<
   UnionToIntersectionSchema<Exclude<TSchemas[keyof TSchemas], undefined>>
 >;
 
-export type Step<TStepName extends string> = {
+export type Step<TStepName extends string, TCondition extends string> = {
   name: TStepName;
+  skip?: {
+    condition: TCondition;
+    target: NoInfer<TStepName>;
+  }[];
 };
 
-export type Steps<TStepName extends string> = [
-  Step<TStepName>,
-  ...Step<TStepName>[],
+export type Steps<TStepName extends string, TCondition extends string> = [
+  Step<TStepName, TCondition>,
+  ...Step<TStepName, TCondition>[],
 ];
 
 export type Event =

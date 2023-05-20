@@ -1,6 +1,8 @@
 import {
   AssignMeta,
+  ConditionPredicate,
   GuardMeta,
+  NoInfer,
   Typestate,
   assign,
   createMachine,
@@ -24,12 +26,26 @@ const getStepNameFromMeta = <
 
 export const generateMachine = <
   TStepName extends string,
+  TCondition extends string,
   TSchemas extends Partial<Record<TStepName, ZodTypeAny>>,
->(options: {
-  name: string;
-  schemas: TSchemas;
-  steps: Steps<TStepName>;
-}) => {
+>(
+  config: {
+    name: string;
+    schemas: TSchemas;
+    steps: Steps<TStepName, TCondition>;
+  },
+  options?: {
+    conditions: NoInfer<
+      Record<
+        TCondition,
+        ConditionPredicate<
+          { error?: ZodError; values: ValuesFromSchemas<TSchemas> },
+          Event
+        >
+      >
+    >;
+  },
+) => {
   type TValues = ValuesFromSchemas<TSchemas>;
   type TContext = {
     error?: ZodError;
@@ -41,12 +57,12 @@ export const generateMachine = <
       context: {
         values: {} as TValues,
       },
-      id: options.name,
-      initial: options.steps[0].name,
+      id: config.name,
+      initial: config.steps[0].name,
       predictableActionArguments: true,
-      states: generateStatesFromSteps<TStepName, TSchemas>(
-        options.steps,
-        options.schemas,
+      states: generateStatesFromSteps<TStepName, TCondition, TSchemas>(
+        config.steps,
+        config.schemas,
       ),
     },
     {
@@ -56,7 +72,7 @@ export const generateMachine = <
             AssignMeta<TContext, Event>,
             TStepName
           >(meta);
-          const schema = options.schemas?.[stepName];
+          const schema = config.schemas?.[stepName];
           const values = 'values' in event ? event.values : undefined;
           if (!schema || !values) {
             return prevContext;
@@ -81,18 +97,18 @@ export const generateMachine = <
               AssignMeta<TContext, Event>,
               TStepName
             >(meta);
-            const schema = options.schemas[stepName];
+            const schema = config.schemas[stepName];
             if (!schema) {
-              throw new Error(
+              console.warn(
                 `Expected step ${stepName} to have schema but did not find one`,
               );
+              return undefined;
             }
             const values = 'values' in event ? event.values : undefined;
             const res = schema.safeParse(values);
             if (res.success) {
-              throw new Error(
-                `Expected validation to faile for step ${stepName}`,
-              );
+              console.warn(`Expected validation to faile for step ${stepName}`);
+              return undefined;
             }
             return res.error;
           },
@@ -107,15 +123,14 @@ export const generateMachine = <
             GuardMeta<TContext, Event>,
             TStepName
           >(meta);
-          console.log('[stepName]', stepName);
-          const schema = options.schemas[stepName];
-          console.log('[schema]', schema);
+          const schema = config.schemas[stepName];
           if (!schema) {
             return true;
           }
           const res = schema.safeParse(event.values);
           return res.success;
         },
+        ...options?.conditions,
       },
     },
   );

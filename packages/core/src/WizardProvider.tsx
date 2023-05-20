@@ -21,12 +21,13 @@ const WizardContext = React.createContext<
 
 export const WizardProvider = <
   TStepName extends string,
+  TCondition extends string,
   TSchemas extends Partial<Record<TStepName, ZodTypeAny>>,
 >(props: {
   children: React.ReactNode;
   name: string;
   schemas: TSchemas;
-  steps: Steps<TStepName>;
+  steps: Steps<TStepName, TCondition>;
 }) => {
   const generatedAtomWithMachine = React.useMemo(
     () =>

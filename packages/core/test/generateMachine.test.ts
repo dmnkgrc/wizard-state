@@ -130,4 +130,72 @@ describe('generateMachine', () => {
       },
     });
   });
+
+  it('correctly skips steps', () => {
+    const machine = generateMachine(
+      {
+        name: 'test-wizard',
+        schemas: {
+          step1: z.object({
+            age: z.number(),
+          }),
+          step2: z.object({
+            parentName: z.string(),
+          }),
+        },
+        steps: [
+          {
+            name: 'step1',
+          },
+          {
+            name: 'step2',
+            skip: [{ condition: 'isAdult', target: 'step3' }],
+          },
+          {
+            name: 'step3',
+          },
+        ],
+      },
+      {
+        conditions: {
+          isAdult: (context, event) => {
+            const values = z.object({
+              values: z.object({
+                age: z.number(),
+              }),
+            });
+            const eventRes = values.safeParse(event);
+            if (eventRes.success) {
+              return eventRes.data.values.age >= 18;
+            }
+            return context.values.age ? context.values.age >= 18 : false;
+          },
+        },
+      },
+    );
+
+    const { initialState } = machine;
+    const secondStateAdult = machine.transition(initialState, {
+      type: 'next',
+      values: { age: 18 },
+    });
+    expect(secondStateAdult.matches('step3')).toEqual(true);
+    expect(
+      machine.transition(secondStateAdult, 'back').matches('step1'),
+    ).toEqual(true);
+
+    const secondStateChild = machine.transition(initialState, {
+      type: 'next',
+      values: { age: 9 },
+    });
+    expect(secondStateChild.matches('step2')).toEqual(true);
+    expect(
+      machine.transition(secondStateChild, 'back').matches('step1'),
+    ).toEqual(true);
+
+    const secondStateInvalid = machine.transition(initialState, {
+      type: 'next',
+    });
+    expect(secondStateInvalid.matches('step1')).toEqual(true);
+  });
 });
